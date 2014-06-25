@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+# -*- coding: utf-8 -*-
 import os
 import time
 import ConfigParser
@@ -19,6 +20,19 @@ def addDotsInNumbers(data):
             result += phrase+" "
     if result[-1] == ',':
         result[-1] = ""
+    return str(result[:len(result)-1])
+
+def addDotsInNumbers2(data):
+    '''
+        string with dot separated numbers, which inserted after every third digit from right to left
+    '''
+    result=''
+    data=str(data).split(' ')
+    for phrase in data:
+        if phrase.isdigit() and len(phrase)>3:
+            result += format(int(buf),',d')+" "
+        else:
+            result += phrase+" "
     return str(result[:len(result)-1])
 
 class RightClickMenu(QtGui.QMenu):
@@ -126,54 +140,36 @@ class WorkThread(QtCore.QThread):
  
     def run(self):
         while(True):
-            real_speed = "0"
+            real_download = real_upload = "0"
             th_data, errors = self.__parser.getNewStats()
+            if self.__previos_data[0] != 0:
+                real_upload = "%s kbps" % int((((abs(th_data[0] - self.__previos_data[0]) / 1024.) / self.__interval) / 2.5) * self.__koeff )
             if self.__previos_data[1] != 0:
-                real_speed = "%s kbps" % (abs(th_data[1] - self.__previos_data[1])*20)
+                real_download = "%s kbps" % int(((abs(th_data[1] - self.__previos_data[1]) / 1024.) / self.__interval) * self.__koeff * 20)
             self.__previos_data = th_data
-            self.emit(QtCore.SIGNAL('add(QString)'), str(th_data + [real_speed]))
+            self.emit(QtCore.SIGNAL('add(QString)'), str(th_data + [real_download, real_upload]))
             time.sleep(self.__interval - 0.25)
 
-class SystemTrayIcon(QtGui.QSystemTrayIcon):
-    def __init__(self, parent=None):
-        QtGui.QSystemTrayIcon.__init__(self, parent)
-        self.setIcon(QtGui.QIcon("ui/icons/tray.png"))
-        # menu in tray
-        self.right_menu = RightClickMenu()
-        self.setContextMenu(self.right_menu)
-    
-        self.activated.connect(self.click_trap)
-        
-        self.string = "Getting data from modem..."
-        self.thread = None
+class StatsWindow(QtGui.QWidget):
 
-    def click_trap(self, value):
-        # left click!
-        if value == self.Trigger: 
-            QtCore.QTimer.singleShot(50, self.app_stats)
+    def __init__(self, parent=None):
+        QtGui.QWidget.__init__(self, parent)
+        self.thread = None
+        self.window = uic.loadUi("ui/stats.ui")
+        self.window.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
+        self.init_thread()
     
     def get_data(self, data_str):
         data = eval(str(data_str))
-        new_string = "Tx B/s: %15s    Rx B/s: %15s\n" % (addDotsInNumbers(data[2]), addDotsInNumbers(data[3]))
-        new_string += "Downstream: %s    Upstream: %s\n" % (addDotsInNumbers(data[4]), addDotsInNumbers(data[5]))
-        new_string += "Real speed: %s" % addDotsInNumbers(data[6])
-        self.string = new_string
+        self.window.TxBs.setText("Tx : %s kbps" % addDotsInNumbers2(int(data[2]/1024.)))
+        self.window.RxBs.setText("Rx : %s kbps" % addDotsInNumbers2(int(data[3]/1024.)))
+        self.window.Downstream.setText("Downstream: %s" % addDotsInNumbers(data[4]))
+        self.window.Upstream.setText("Upstream: %s" % addDotsInNumbers(data[5]))
+        self.window.Real.setText("Real download: %s" % addDotsInNumbers(data[6]))
+        self.window.Real2.setText("Real upload: %s" % addDotsInNumbers(data[7]))
     
-    def app_init(self):
-        self.showMessage("NG StatsViewer", "Please, enter user/password/ip in [Options] section")    
-    
-    def app_stats(self):
-        self.showMessage("NG StatsViewer", self.string)  
-    
-    def welcome(self):
-        self.showMessage("NG StatsViewer", "Succesfully started...")
-    
-    def show(self):
-        QtGui.QSystemTrayIcon.show(self)
-        if not os.path.exists("NG-StatsViewer.cfg"):
-            QtCore.QTimer.singleShot(1, self.app_init)
-        else:
-            QtCore.QTimer.singleShot(1, self.welcome)
+    def init_thread(self):
+        if os.path.exists("NG-StatsViewer.cfg"):
             # read config
             login = password = ip = ""
             update_per = koeff = 1
@@ -192,6 +188,31 @@ class SystemTrayIcon(QtGui.QSystemTrayIcon):
             self.thread = WorkThread(login, password, ip, koeff, update_per)
             self.connect(self.thread, QtCore.SIGNAL("add(QString)"), self.get_data)
             self.thread.start()
+            self.window.show()
+
+class SystemTrayIcon(QtGui.QSystemTrayIcon):
+    def __init__(self, parent=None):
+        QtGui.QSystemTrayIcon.__init__(self, parent)
+        self.setIcon(QtGui.QIcon("ui/icons/tray.png"))
+        # menu in tray
+        self.right_menu = RightClickMenu()
+        self.setContextMenu(self.right_menu)
+        # additional windows with stats
+        self.stats_window = None
+    
+    def app_init(self):
+        self.showMessage("NG StatsViewer", "Please, enter user/password/ip in [Options] section")    
+    
+    def welcome(self):
+        self.showMessage("NG StatsViewer", "Succesfully started...")
+    
+    def show(self):
+        QtGui.QSystemTrayIcon.show(self)
+        if not os.path.exists("NG-StatsViewer.cfg"):
+            QtCore.QTimer.singleShot(1, self.app_init)
+        else:
+            self.stats_window = StatsWindow()
+            QtCore.QTimer.singleShot(1, self.welcome)
 
 def main():
     app = QtGui.QApplication([])
