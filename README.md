@@ -3,7 +3,7 @@ NG-StatsViewer
 
 NetGear DGND3700 statistics viewer
 
-This application just parsing with BeautifulSoup and urllib2 information from "Router status / Statistics page and show in tray as 'hint', when clicked on icon. Also need use your auth data for log-in modem, which typed by you in Options.
+This application just parsing with BeautifulSoup and urllib2 information from "Router status / Statistics" page and show in tray as 'hint', when clicked on icon. Also need use your auth data for log-in modem, which typed by you in Options.
 
 Requirements  
 --------------  
