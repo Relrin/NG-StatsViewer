@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>328</width>
-    <height>75</height>
+    <height>51</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>328</width>
-    <height>75</height>
+    <height>51</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>328</width>
-    <height>75</height>
+    <height>51</height>
    </size>
   </property>
   <property name="contextMenuPolicy">
@@ -44,44 +44,8 @@
   <widget class="QLabel" name="TxBs">
    <property name="geometry">
     <rect>
-     <x>178</x>
-     <y>9</y>
-     <width>141</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QLabel" name="Downstream">
-   <property name="geometry">
-    <rect>
-     <x>9</x>
-     <y>30</y>
-     <width>161</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QLabel" name="Upstream">
-   <property name="geometry">
-    <rect>
-     <x>178</x>
-     <y>30</y>
+     <x>179</x>
+     <y>6</y>
      <width>141</width>
      <height>20</height>
     </rect>
@@ -99,9 +63,9 @@
    <property name="geometry">
     <rect>
      <x>9</x>
-     <y>9</y>
+     <y>6</y>
      <width>161</width>
-     <height>16</height>
+     <height>20</height>
     </rect>
    </property>
    <property name="font">
@@ -116,8 +80,8 @@
   <widget class="QLabel" name="Real">
    <property name="geometry">
     <rect>
-     <x>9</x>
-     <y>51</y>
+     <x>10</x>
+     <y>30</y>
      <width>161</width>
      <height>16</height>
     </rect>
@@ -134,8 +98,8 @@
   <widget class="QLabel" name="Real2">
    <property name="geometry">
     <rect>
-     <x>178</x>
-     <y>51</y>
+     <x>179</x>
+     <y>30</y>
      <width>141</width>
      <height>16</height>
     </rect>
