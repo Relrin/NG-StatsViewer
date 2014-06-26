@@ -163,8 +163,6 @@ class StatsWindow(QtGui.QWidget):
         data = eval(str(data_str))
         self.window.TxBs.setText("Tx : %s kbps" % addDotsInNumbers2(int(data[2]/1024.)))
         self.window.RxBs.setText("Rx : %s kbps" % addDotsInNumbers2(int(data[3]/1024.)))
-        self.window.Downstream.setText("Downstream: %s" % addDotsInNumbers(data[4]))
-        self.window.Upstream.setText("Upstream: %s" % addDotsInNumbers(data[5]))
         self.window.Real.setText("Real download: %s" % addDotsInNumbers(data[6]))
         self.window.Real2.setText("Real upload: %s" % addDotsInNumbers(data[7]))
     
