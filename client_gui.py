@@ -70,6 +70,7 @@ class RightClickMenu(QtGui.QMenu):
         self.window.PasswordEdit.setText(self.__password)
         self.window.IpLineEdit.setText(self.__ip)
         self.window.UpdateSpinBox.setValue(self.__update_per)
+        self.window.KoeffSpinBox.setValue(self.__koeff)
         self.connect(self.window.CancelButton, QtCore.SIGNAL("clicked()"), self.closeOptionsWindow)
         self.connect(self.window.OkButton, QtCore.SIGNAL("clicked()"), self.saveOptionsWindow)
 
